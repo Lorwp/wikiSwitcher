@@ -9,13 +9,13 @@ if ( pageTitle === currUser && mw.config.get( 'wgNamespaceNumber' ) === 2 ) {
 	loadAvailabilities();
 }
 /* GLOBAL */
- 
+
 function jqEsc( expression ) {
     return expression.replace( /[!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, '\\$&' );
 }
- 
+
 function getPageText() {
-	return $.ajax({
+	return mw.Api(); ({
 		url: mw.config.get( 'wgServer' ) + mw.config.get( 'wgScriptPath' ) + '/api.php?titles=' + editAvailable.replace(' ','_') + '&action=query&prop=revisions&rvprop=content&format=json&indexpageids=true',
 		dataType: 'json',
 		success: function(response){
@@ -29,7 +29,7 @@ function getPageText() {
 					console.warn( 'Extra parameter isBool: true' );
 					var currStatusExtraPara = currStatus.substring( currStatus.indexOf( "|" )+1, currStatus.indexOf( "=" ) );
 					var currStatusExtraVal = currStatus.substring( currStatus.indexOf( "=" )+1, currStatus.length );
-					if ( currStatusExtraVal == '' && currStatusExtraVal == '0' ){
+					if ( currStatusExtraVal === '' && currStatusExtraVal == '0' ){
 						currStatusExtraVal = 'false';
 					} else {
 						currStatusExtraVal = 'true';
@@ -52,7 +52,7 @@ function getPageText() {
 		}
 	});
 }
- 
+
 function loadAvailabilities() {
 	var linkAvailable = mw.util.addPortletLink(
 		'p-personal',
@@ -65,26 +65,26 @@ function loadAvailabilities() {
 	);
 	$( linkAvailable ).click( function ( e ) {
 		e.preventDefault();
-		/* STUFF TO DO */alert( "You should know this isn't ready yet fool!!!" )/* STUFF TO DO */
+		/* STUFF TO DO */alert( "You should know this isn't ready yet fool!!!" );/* STUFF TO DO */
 	});
 }
- 
+
 function editThePage( newPageText, pageSummary ) {
 	var anEditToken = mw.user.tokens.get( 'editToken' );
 	console.log( 'Got token: %s', anEditToken );
 	pageSummary = pageSummary.substring(0, 189) + " - [[User:Technical 13/Scripts/wikiSwitcher|wiki break switcher]]";
-	console.log( 'Edit summary:\n%s\nNew content:\n%s', pageSummary, newPageText )
+	console.log( 'Edit summary:\n%s\nNew content:\n%s', pageSummary, newPageText );
 	var request = {
 		'action': 'edit',
 		'title': pageTitle,
 		'text': newPageText,
 		'summary': pageSummary,
 		'token': anEditToken
-	}
+	};
 	var api = new mw.Api();
-	api.post(request)
+	api.post(request);
 }
- 
+
 function changeAvailability() {
 	console.log( 'Setting availability to %s', availability );
 	//<nowiki> Set up the new template to use
@@ -92,3 +92,8 @@ function changeAvailability() {
 	//</nowiki>
 	editThePage( pageNewText, currUser + ' is now ' + availability );
 }
+var template = "{{wikibreak switch}}";
+new mw.Api().get( { action: 'query', prop: 'revisions', rvprop: 'content' } ).done( function( dataReturned ) { if (template === "{{Wikibreak switch}}") {
+	
+}
+ } );
